@@ -1,0 +1,35 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="deadmanwatch"
+version="1.0.2"
+displayName="Deadman's Watch"
+authors="Ishi"
+credits="Minecraft Clock"
+description='''Adds a customizable in-game clock with night alert and a customizable message.'''
+
+logoFile="assets/deadmanwatch/textures/gui/clock_inner.png"
+
+[[dependencies.deadmanwatch]]
+    modId="forge"
+    mandatory=true
+    versionRange="[47,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.deadmanwatch]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20,1.21)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.deadmanwatch]]
+    modId="cloth_config"
+    mandatory=true
+    versionRange="[11,)"
+    ordering="NONE"
+    side="CLIENT"
+

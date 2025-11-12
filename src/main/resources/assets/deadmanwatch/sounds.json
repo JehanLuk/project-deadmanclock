@@ -1,0 +1,12 @@
+{
+  "clock_alert": {
+    "sounds": [
+      { 
+        "name": "deadmanwatch:clock_alert",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.deadmanwatch.clock_alert",
+    "category": "player"
+  }
+}
