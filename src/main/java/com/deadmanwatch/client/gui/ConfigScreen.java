@@ -29,7 +29,6 @@ public class ConfigScreen {
         ConfigCategory category = builder.getOrCreateCategory(Component.literal("Clock Settings"));
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-        // Opacidade
         var opacityEntry = entryBuilder
                 .startDoubleField(Component.literal("Clock's opacity"), DeadmanWatchConfig.CLIENT.opacity.get())
                 .setDefaultValue(1.0)
@@ -39,7 +38,6 @@ public class ConfigScreen {
                 .build();
         category.addEntry(opacityEntry);
 
-        // Texto noturno
         var nightMsgEntry = entryBuilder
                 .startStrField(Component.literal("Night message"), DeadmanWatchConfig.CLIENT.nightMessage.get())
                 .setDefaultValue("The night comes, the monsters begin to rise...")
@@ -47,7 +45,6 @@ public class ConfigScreen {
                 .build();
         category.addEntry(nightMsgEntry);
 
-        // Horário do alerta noturno
         var alertEntry = entryBuilder
                 .startIntField(Component.literal("Night alert time (ticks)"), DeadmanWatchConfig.CLIENT.nightAlertTime.get())
                 .setDefaultValue(13000)
@@ -57,7 +54,6 @@ public class ConfigScreen {
                 .build();
         category.addEntry(alertEntry);
 
-        // Tamanho do texto
         var textScaleEntry = entryBuilder
                 .startDoubleField(Component.literal("Text size"), DeadmanWatchConfig.CLIENT.nightTextScale.get())
                 .setDefaultValue(1.0)
@@ -67,7 +63,6 @@ public class ConfigScreen {
                 .build();
         category.addEntry(textScaleEntry);
 
-        // Som noturno
         var soundEntry = entryBuilder
                 .startBooleanToggle(Component.literal("Enable sound effect"), DeadmanWatchConfig.CLIENT.enableSound.get())
                 .setDefaultValue(true)
@@ -75,7 +70,14 @@ public class ConfigScreen {
                 .build();
         category.addEntry(soundEntry);
 
-        // Âncora
+        var showOutsideEntry = entryBuilder
+                .startBooleanToggle(Component.literal("Show in all dimensions"), DeadmanWatchConfig.CLIENT.showOutsideOverworld.get())
+                .setDefaultValue(false)
+                .setTooltip(Component.literal("If enabled, the clock and alert will appear in all dimensions."))
+                .setSaveConsumer(DeadmanWatchConfig.CLIENT.showOutsideOverworld::set)
+                .build();
+        category.addEntry(showOutsideEntry);
+
         var anchorEntry = entryBuilder
                 .startEnumSelector(
                         Component.literal("Anchor position"),
@@ -87,7 +89,6 @@ public class ConfigScreen {
                 .build();
         category.addEntry(anchorEntry);
 
-        // Deslocamento X
         var offsetXEntry = entryBuilder
                 .startIntField(Component.literal("Horizontal position (X)"), DeadmanWatchConfig.CLIENT.offsetX.get())
                 .setDefaultValue(0)
@@ -98,7 +99,6 @@ public class ConfigScreen {
                 .build();
         category.addEntry(offsetXEntry);
 
-        // Deslocamento Y
         var offsetYEntry = entryBuilder
                 .startIntField(Component.literal("Vertical position (Y)"), DeadmanWatchConfig.CLIENT.offsetY.get())
                 .setDefaultValue(0)
@@ -109,9 +109,7 @@ public class ConfigScreen {
                 .build();
         category.addEntry(offsetYEntry);
 
-        builder.setSavingRunnable(() -> {
-            DeadmanWatchConfig.CLIENT_SPEC.save();
-        });
+        builder.setSavingRunnable(DeadmanWatchConfig.CLIENT_SPEC::save);
 
         return builder.build();
     }

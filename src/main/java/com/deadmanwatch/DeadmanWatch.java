@@ -16,16 +16,12 @@ public class DeadmanWatch {
     public static final String MODID = "deadmanwatch";
 
     public DeadmanWatch() {
-        // Registro do arquivo de configuração
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, DeadmanWatchConfig.CLIENT_SPEC);
 
-        //Registro do som
         ModSounds.register(FMLJavaModLoadingContext.get().getModEventBus());
 
-        //Registro do renderer do relógio
         MinecraftForge.EVENT_BUS.register(ClockOverlayRenderer.class);
 
-        // Registro da tela de configuração Cloth Config
         ConfigScreen.register();
     }
 }

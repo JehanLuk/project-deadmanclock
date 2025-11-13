@@ -27,10 +27,8 @@ public class ClockOverlayRenderer {
             new ResourceLocation("deadmanwatch", "textures/gui/clock_outer.png");
 
     private static float smoothAngle = 0f;
-
     private static boolean alertPlayedThisNight = false;
     private static boolean wasNight = false;
-
     private static ResourceLocation lastDimension = null;
     private static int dimensionChangeCooldown = 0;
 
@@ -43,15 +41,13 @@ public class ClockOverlayRenderer {
 
         if (lastDimension == null || !lastDimension.equals(currentDim)) {
             lastDimension = currentDim;
-            dimensionChangeCooldown = 40;
+            dimensionChangeCooldown = 500;
             alertPlayedThisNight = false;
             wasNight = false;
-            return;
         }
 
         if (dimensionChangeCooldown > 0) {
             dimensionChangeCooldown--;
-            return;
         }
 
         PoseStack pose = event.getGuiGraphics().pose();
@@ -68,6 +64,7 @@ public class ClockOverlayRenderer {
         float opacity = DeadmanWatchConfig.CLIENT.opacity.get().floatValue();
         int alertTime = DeadmanWatchConfig.CLIENT.nightAlertTime.get();
         boolean enableSound = DeadmanWatchConfig.CLIENT.enableSound.get();
+        boolean showOutsideOverworld = DeadmanWatchConfig.CLIENT.showOutsideOverworld.get();
         DeadmanWatchConfig.Client.ClockAnchor anchor = DeadmanWatchConfig.CLIENT.anchor.get();
         int offsetX = DeadmanWatchConfig.CLIENT.offsetX.get();
         int offsetY = DeadmanWatchConfig.CLIENT.offsetY.get();
@@ -112,6 +109,14 @@ public class ClockOverlayRenderer {
             }
         }
 
+        boolean isOverworld = mc.level.dimension().equals(Level.OVERWORLD);
+
+        if (!isOverworld && !showOutsideOverworld) {
+            wasNight = false;
+            alertPlayedThisNight = false;
+            return;
+        }
+
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -122,7 +127,6 @@ public class ClockOverlayRenderer {
             pose.translate(centerX + innerOffsetX, centerY + innerOffsetY, 0f);
             pose.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(baseRotation + smoothAngle));
             pose.translate(-innerWidth / 2f, -innerHeight / 2f, 0f);
-
             RenderSystem.setShaderTexture(0, INNER_TEX);
             event.getGuiGraphics().blit(INNER_TEX, 0, 0, 0, 0,
                     innerWidth, innerHeight, innerWidth, innerHeight);
@@ -134,7 +138,6 @@ public class ClockOverlayRenderer {
             pose.translate(centerX + outerOffsetX, centerY + outerOffsetY, 0f);
             pose.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(baseRotation));
             pose.translate(-outerWidth / 2f, -outerHeight / 2f, 0f);
-
             RenderSystem.setShaderTexture(0, OUTER_TEX);
             event.getGuiGraphics().blit(OUTER_TEX, 0, 0, 0, 0,
                     outerWidth, outerHeight, outerWidth, outerHeight);
@@ -144,7 +147,7 @@ public class ClockOverlayRenderer {
         RenderSystem.disableBlend();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
-        if (!mc.level.dimension().equals(Level.OVERWORLD)) {
+        if (!isOverworld) {
             wasNight = false;
             alertPlayedThisNight = false;
             return;
@@ -156,13 +159,13 @@ public class ClockOverlayRenderer {
 
         if (isNight && !wasNight) alertPlayedThisNight = false;
 
-        if (isNight && !alertPlayedThisNight) {
+        if (dimensionChangeCooldown <= 0 && isNight && !alertPlayedThisNight) {
             if (enableSound && mc.getSoundManager() != null) {
                 SoundEvent sound = ModSounds.CLOCK_ALERT.get();
                 SimpleSoundInstance instance = new SimpleSoundInstance(
                         sound.getLocation(),
                         SoundSource.PLAYERS,
-                        1.0f, 1.0f,
+                        0.6f, 1.0f,
                         mc.player.getRandom(),
                         false, 0,
                         net.minecraft.client.resources.sounds.SoundInstance.Attenuation.NONE,

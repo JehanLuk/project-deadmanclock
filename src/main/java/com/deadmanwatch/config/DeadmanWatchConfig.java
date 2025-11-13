@@ -16,8 +16,9 @@ public class DeadmanWatchConfig {
         public final ForgeConfigSpec.DoubleValue opacity;
         public final ForgeConfigSpec.EnumValue<ClockAnchor> anchor;
         public final ForgeConfigSpec.BooleanValue enableSound;
+        public final ForgeConfigSpec.BooleanValue showOutsideOverworld;
         public final ForgeConfigSpec.ConfigValue<String> nightMessage;
-        public final ForgeConfigSpec.DoubleValue nightTextScale;   
+        public final ForgeConfigSpec.DoubleValue nightTextScale;
         public final ForgeConfigSpec.IntValue nightAlertTime;
         public final ForgeConfigSpec.IntValue offsetX;
         public final ForgeConfigSpec.IntValue offsetY;
@@ -29,44 +30,40 @@ public class DeadmanWatchConfig {
         Client(ForgeConfigSpec.Builder builder) {
             builder.push("Clock Settings");
 
-            // Opacidade
             opacity = builder
-                .comment("Opacidade do relógio (0.0 = invisível, 1.0 = visível)")
+                .comment("Clock opacity (0.0 = invisible, 1.0 = fully visible)")
                 .defineInRange("opacity", 1.0, 0.0, 1.0);
 
-            // Âncora
             anchor = builder
-                .comment("Posição fixa do relógio: TOP, LEFT, RIGHT")
+                .comment("Fixed position of the clock: TOP, LEFT, or RIGHT")
                 .defineEnum("anchor", ClockAnchor.TOP);
 
-            // Deslocamento X
             offsetX = builder
-                .comment("Deslocamento horizontal (em pixels)")
+                .comment("Horizontal offset (in pixels)")
                 .defineInRange("offsetX", 0, -200, 200);
 
-            // Deslocamento Y
             offsetY = builder
-                .comment("Deslocamento vertical (em pixels)")
+                .comment("Vertical offset (in pixels)")
                 .defineInRange("offsetY", 0, -100, 100);
 
-            // Som noturno
             enableSound = builder
-                .comment("Ativar ou não o som de alerta noturno")
+                .comment("Enable or disable the night alert sound")
                 .define("enableSound", true);
 
-            // Texto noturno
+            showOutsideOverworld = builder
+                .comment("Display the clock and alerts in dimensions outside the Overworld (Nether, End, etc.)")
+                .define("showOutsideOverworld", false);
+
             nightMessage = builder
-                .comment("Texto exibido durante a noite")
+                .comment("Text displayed at night")
                 .define("nightMessage", "The night comes, the monsters begin to rise...");
 
-            // Escala do texto noturno
             nightTextScale = builder
-                .comment("Escala do texto exibido durante a noite (1.0 = normal, 2.0 = dobro, etc)")
+                .comment("Scale of the text displayed at night (1.0 = normal, 2.0 = double, etc.)")
                 .defineInRange("nightTextScale", 1.0, 0.5, 3.0);
 
-            // Horário do alerta noturno
             nightAlertTime = builder
-                .comment("Horário do alerta noturno (em ticks, 0 = amanhecer, 13000 = pôr do sol, 24000 = reinício do dia)")
+                .comment("Night alert time (in ticks, 0 = sunrise, 13000 = sunset, 24000 = new day)")
                 .defineInRange("nightAlertTime", 13000, 13000, 24000);
 
             builder.pop();
